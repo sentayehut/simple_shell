@@ -1,0 +1,104 @@
+.TH ALX 1 "24 October 2021" "0.1" "ALX"
+.SH NAME
+.B hsh
+- command interpreter (simple shell).
+.SH SYNOPSIS
+hsh [filename]
+
+.SH DESCRIPTION
+.B hsh
+is the standard command interpreter for the system. This man page is not intended to be a tutorial or a complete specification of the shell.
+
+.B Overview
+
+The simple shell is a command that reads lines from either a file or the terminal, interprets them, and generally executes other commands. It is the program that is started when a user logs into the system. It incorporates many features to aid interactive use and has the advantage that the interpretative language is common to both interactive and non-interactive use (shell scripts). That is, commands can be typed directly to the running simple shell or can be put into a file, which can be executed directly by the simple shell.
+
+.B Invocation
+
+The first non-option argument specified on the command line will be treated as the name of a file from which to read commands (a shell script), and the remaining arguments are set as the positional parameters of the shell ($1, $2, etc.). Otherwise, the shell reads commands from its standard input.
+
+.B Commands
+
+The shell interprets the words it reads according to a language, the specification of which is outside the scope of this man page (refer to the BNF in the IEEE Std 1003.2 ("POSIX.2")document). Essentially though, a line is read and if the first word of the line (or after	a control operator) is not a keyword, then the shell has recognized a simple command. Otherwise, a complex command or some other special construct may have been recognized.
+
+.B Search and Execution
+
+There are three types of commands: simple shell functions, built-in commands, and normal programs. The command is searched for (by name) in that order. The three types of commands are all executed in a different way.
+
+When a shell function is executed, all of the shell positional parameters (except $0, which remains unchanged) are set to the arguments of the shell function. The variables which are explicitly placed in the environment of the command (byplacing assignments to them before the function name) are made local to the function and are set to the values given. Then the command given in the function definition is executed. The positional parameters are restored to their original values when the command completes. This all occurs within the current simple shell.
+
+Shell built-in commands are executed internally to the simple shell, without spawning a new process. There are two kinds of built-in commands: regular and special. Assignments before special builtins persist after they finish executing and assignment errors, redirection errors and certain operand errors cause a script to be aborted. Special builtins cannot be overridden with a function. Both regular and special builtins can affect the shell in ways normal programs cannot.
+
+Otherwise, if the command name does not match a function or built-in command, the command is searched for as a normal program in the file system (as described in the next section). When a normal program is executed, the shell runs the program, passing the arguments and the environment to the program. If the program is not a normal executable file (i.e., if it does not begin with the "magic number" whose ASCII representation is "#!", resulting in an ENOEXEC return value from execve(2)) but appears to be a text file, the shell will run a new instance of
+.B sh
+to interpret it.
+
+.B Path Search
+
+When locating a command, the shell first looks to see if it has a shell function by that name. Then it looks for a builtin command by that name. If a built-in command is not found, one of two things happen:
+
+1. Command names containing a slash are simply executed without performing any searches.
+
+2. The shell searches each entry in the PATH variable in turn for the command. The value of the PATH variable should bea series of entries separated by colons. Each entry consists of a directory name. The current directory may be indicated implicitly by an empty directory name, or explicitly by a single period.
+
+.B Command Exit Status
+
+Each command has an exit status that can influence the behavior of other shell commands. The paradigm is that a command exits with zero for normal or success, and non-zero for failure, error, or a false indication. The man page for each command should indicate the various exit codes and what they mean. Additionally, the built-in commands return exit codes, as does an executed shell function.
+
+If a command is terminated by a signal, its exit status is greater than 128. The signal name can be found by passing the exit status to kill -l.
+
+If there is no command word, the exit status is the exit status of the last command substitution executed, or zero if the command does not contain any command substitutions.
+
+.SH ENVIRONMENT
+Environment variables affect the execution of
+.B sh
+:
+
+ENV	Initialization file for interactive shells.
+
+.SH EXIT STATUS
+Errors that are detected by the shell, such as a syntax error, will cause the shell to exit with a non-zero exit status. If the shell is not an interactive shell, the execution of the shell file will be aborted. Otherwise the shell will return the exit status of the last command executed, or if the
+.B exit
+builtin is used with a numeric argument, it will return the argument.
+
+.SH EXAMPLES
+Below an example of interactive mode:
+
+.RS +4
+$ ./hsh
+.RE
+.RS +4
+($) /bin/ls
+.RE
+.RS +4
+hsh main.c shell.c
+.RE
+.RS +4
+($)
+.RE
+.RS +4
+($) exit
+.RE
+.RS +4
+$
+
+.SH HISTORY
+.B hsh
+is a POSIX-compliant implementation of /bin/sh that aims to be as small as possible.
+.B hsh
+is a descendant of the first
+.B sh
+version of Unix that appeared in Version 1 AT&T UNIX in 1971, written by Ken Thompson in AT&T Bell Laboratories. That version of
+.B sh
+was rewritten in 1989 under the BSD license after the Bourne shell from AT&T System V Release 4 UNIX, which inherited the name
+.B sh.
+It was a simple command interpreter, not designed for scripting, but nonetheless introduced several innovative featuresto the command-line interface and led to the development of the later Unix shells.
+
+.SH BUGS
+No known bugs until now.
+
+.SH CREDITS
+This man page is created for academic purpose, to make our Simple Shell project by Sentayehu Tilahun Adamu and Anteneh Bizuneh, ALX Software engineering Students.
+
+.SH AUTHORS
+Sentayehu Tilahun Adamu & Anteneh Bizuneh
