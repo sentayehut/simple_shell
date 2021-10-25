@@ -1,4 +1,4 @@
-.TH ALX 1 "24 October 2021" "0.1" "ALX"
+.TH SIMPLE_SHELL "1" "October 24, 2021" "Simple Shell Manual Page"
 .SH NAME
 .B hsh
 - command interpreter (simple shell).
