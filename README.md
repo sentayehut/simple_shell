@@ -157,3 +157,74 @@ List of allowed functions and system calls
 .wait4 (man 2 wait4)
 
 .write (man 2 write)
+
+Compilation
+our shell will be compiled this way:
+
+gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
+
+Testing
+
+Your shell should work like this in interactive mode:
+
+$ ./hsh
+
+($) /bin/ls
+
+hsh main.c shell.c
+
+($)
+
+($) exit
+
+$
+
+But also in non-interactive mode:
+
+$ echo "/bin/ls" | ./hsh
+
+hsh main.c shell.c test_ls_2
+
+$
+
+$ cat test_ls_2
+
+/bin/ls
+
+/bin/ls
+
+$
+
+$ cat test_ls_2 | ./hsh
+
+hsh main.c shell.c test_ls_2
+
+hsh main.c shell.c test_ls_2
+
+$
+
+         Tasks
+
+0. README, man, AUTHORS
+
+.Write a README
+
+.Write a man for your shell.
+
+.You should have an AUTHORS file at the root of your repository, listing all individuals having contributed content to the repository. Format, see Docker
+
+.Repo:
+
+
+.GitHub repository: simple_shell
+
+.File: README.md, man_1_simple_shell, AUTHORS
+
+
+   1. Betty would be proud
+
+Write a beautiful code that passes the Betty checks
+
+Repo:
+
+GitHub repository: simple_shell
