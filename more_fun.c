@@ -110,3 +110,4 @@ str2[i] = str[i];
 
 return (str2);
 }
+
