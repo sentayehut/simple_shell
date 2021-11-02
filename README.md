@@ -42,9 +42,9 @@
 
 
 
-##### Requirements
+### Requirements
 
-###### General
+### General
 
            Allowed editors: vi, vim, emacs
 
@@ -65,7 +65,7 @@
 
            Use system calls only when you need to (why?)
 
-#### Example of error with sh:
+### Example of error with sh:
 
             $ echo "qwerty" | /bin/sh
 
@@ -90,9 +90,9 @@
 
                     $
 
-         ##### List of allowed functions and system calls
+         ### List of allowed functions and system calls
 
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                .access (man 2 access)
 
                .chdir (man 2 chdir)
@@ -155,19 +155,20 @@
 
             .write (man 2 write)
 
-   ##### Compilation
-   ##### Our shell will be compiled this way:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   ##### Compilation #####
+   ##### Our shell will be compiled this way:#####
 
              gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
 
              Testing
 
              Your shell should work like this in interactive mode:
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
             $ ./hsh
 
             ($) /bin/ls
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
              hsh main.c shell.c
 
              ($)
@@ -175,15 +176,15 @@
              ($) exit
 
               $
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
               But also in non-interactive mode:
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
              $ echo "/bin/ls" | ./hsh
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
               hsh main.c shell.c test_ls_2
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
               $
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
               $ cat test_ls_2
 
               /bin/ls
@@ -193,24 +194,24 @@
              $
 
              $ cat test_ls_2 | ./hsh
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
              hsh main.c shell.c test_ls_2
 
              hsh main.c shell.c test_ls_2
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
              $
 
-      ###### Tasks
-
+      ### Tasks
+          ~~~~
             0. README, man, AUTHORS
 
             1. Write a README
 
             2.Write a man for your shell.
-
+   
            3.You should have an AUTHORS file at the root of your repository, listing all individuals having contributed content to the repository. 
 		   Format, see Docker
-
+           ~~~~
          .GitHub repository: https://github.com/sentayehut/simple_shell
 
          .File: README.md, man_1_simple_shell, AUTHORS
@@ -227,7 +228,7 @@
                       Write a UNIX command line interpreter.
 
                          : simple_shell
-              ####Your Shell should:
+              #### Your Shell should:
 
 
                               .Display a prompt and wait for the user to type a command. A command line always ends with a new line.
