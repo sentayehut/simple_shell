@@ -95,12 +95,6 @@ void print_number(unsigned int n);
 void print_number_in(int n);
 void print_error(char *line, int c, char **argv);
 void _prerror(char **argv, int c, char **cmd);
-void (*check_for_builtins(vars_t *vars))(vars_t *vars);
-void new_exit(vars_t *vars);
-void _env(vars_t *vars);
-void new_setenv(vars_t *vars);
-void new_unsetenv(vars_t *vars);
-
 
 
 /**
