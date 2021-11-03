@@ -48,8 +48,6 @@ char *_strcpy(char *dest, char *src);
 char *_strchr(char *s, char c);
 int _strncmp(const char *s1, const char *s2, size_t n);
 char *_strdup(char *str);
-int history_dis(__attribute__((unused))char **c, __attribute__((unused))int s);
-int print_echo(char **cmd);
 
 /**###### MEMORIE  MANGMENT ####*/
 
