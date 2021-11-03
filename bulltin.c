@@ -1,97 +1,183 @@
 #include "shell.h"
 
 /**
- * _myexit - exits the shell
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: exits with a given exit status
- *         (0) if info.argv[0] != "exit"
+ * _which - function that show the command which in shell
+ * @source: doble pointer
+ * @environ: list of vars
+ * @test: path
+ * @count_cmd: count of commands ls
+ * Return: 1 in case of successful
  */
-int _myexit(info_t *info)
+int _which(char **source, char **environ, dir **test, long int *count_cmd)
 {
-	int exitcheck;
+	int j = 0, i = 0, count_list = 0;
+	struct stat st;
+	dir *copia = *test;
+	char **verificar;
 
-	if (info->argv[1])  /* If there is an exit arguement */
+	(void)environ;
+	(void)count_cmd;
+	for (count_list = 0; copia; copia = copia->next, count_list++)
 	{
-		exitcheck = _erratoi(info->argv[1]);
-		if (exitcheck == -1)
+	}
+	count_list++;
+	if (source[1] == NULL)
+		return (1);
+	if (*source[1] != '/' && *source[1] != 46)
+	{
+		verificar = _verification(test, source[1], &count_list);
+		for (j = 0; verificar[j]; j++)
 		{
-			info->status = 2;
-			print_error(info, "Illegal number: ");
-			_eputs(info->argv[1]);
-			_eputchar('\n');
-			return (1);
+			if (stat(verificar[j], &st) != -1)
+			{
+				for (i = 0; *(verificar[j] + i); i++)
+				{}
+				write(1, verificar[j], i);
+				write(1, "\n", 1);
+				break;
+			}
 		}
-		info->err_num = _erratoi(info->argv[1]);
-		return (-2);
-	}
-	info->err_num = -1;
-	return (-2);
-}
-
-/**
- * _mycd - changes the current directory of the process
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: Always 0
- */
-int _mycd(info_t *info)
-{
-	char *s, *dir, buffer[1024];
-	int chdir_ret;
-
-	s = getcwd(buffer, 1024);
-	if (!s)
-		_puts("TODO: >>getcwd failure emsg here<<\n");
-	if (!info->argv[1])
-	{
-		dir = _getenv(info, "HOME=");
-		if (!dir)
-			chdir_ret = /* TODO: what should this be? */
-				chdir((dir = _getenv(info, "PWD=")) ? dir : "/");
-		else
-			chdir_ret = chdir(dir);
-	}
-	else if (_strcmp(info->argv[1], "-") == 0)
-	{
-		if (!_getenv(info, "OLDPWD="))
-		{
-			_puts(s);
-			_putchar('\n');
-			return (1);
-		}
-		_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
-		chdir_ret = /* TODO: what should this be? */
-			chdir((dir = _getenv(info, "OLDPWD=")) ? dir : "/");
-	}
-	else
-		chdir_ret = chdir(info->argv[1]);
-	if (chdir_ret == -1)
-	{
-		print_error(info, "can't cd to ");
-		_eputs(info->argv[1]), _eputchar('\n');
+		free_function(verificar, &count_list);
 	}
 	else
 	{
-		_setenv(info, "OLDPWD", _getenv(info, "PWD="));
-		_setenv(info, "PWD", getcwd(buffer, 1024));
+		if ((stat(source[1], &st)) != -1)
+		{
+			for (i = 0; *(source[1] + i); i++)
+			{}
+			write(1, source[1], i);
+			write(1, "\n", 1);
+		}
 	}
-	return (0);
+	return (1);
 }
-
 /**
- * _myhelp - changes the current directory of the process
- * @info: Structure containing potential arguments. Used to maintain
- *          constant function prototype.
- *  Return: Always 0
+ * _cd - function that show the command cd in shell
+ * @source: doble pointer
+ * @environ:list of vars ls
+ * @test:path
+ * @count_cmd:count of commands
+ * Return: 1 in case of successful
  */
-int _myhelp(info_t *info)
+int _cd(char **source, char **environ, dir **test, long int *count_cmd)
 {
-	char **arg_array;
+	char s[100];
+	char *msg = NULL;
+	int sizenum = 0;
 
-	arg_array = info->argv;
-	_puts("help call works. Function not yet implemented \n");
-	if (0)
-		_puts(*arg_array); /* temp att_unused workaround */
-	return (0);
+	(void)environ;
+	(void)test;
+	getcwd(s, 100);
+	if (source[1] == NULL)
+		return (1);
+	if (chdir(source[1]) != 0)
+	{
+		msg = _union(count_cmd, &sizenum);
+		perror(msg);
+		free(msg);
+	}
+	return (1);
+}
+/**
+ * _help - function that show the command help in shell
+ * @source: doble pointer
+ * @environ: this is the
+ * @test:path
+ * @count_cmd:count of commands
+ * Return: 1 in case of successful
+ */
+int _help(char **source, char **environ, dir **test, long int *count_cmd)
+{
+	ssize_t fd, read_data = 0;
+	char concatenar[6] = "help_";
+	char *archivo = '\0';
+	char buf[1024];
+	int i = 0, j = 0, total = 0;
+
+	(void)environ;
+	(void)test;
+	(void)count_cmd;
+	if (source[1] == NULL)
+		return (1);
+	for (i = 0; *(source[1] + i); i++)
+	{}
+	i++;
+	total = i + 5;
+	archivo = malloc(sizeof(char) * (total));
+	if (archivo == '\0')
+		return (0);
+	for (j = 0; concatenar[j]; j++)
+		archivo[j] = concatenar[j];
+	for (j = 0; *(source[1] + j); j++)
+		archivo[5 + j] = *(source[1] + j);
+	archivo[5 + j] = '\0';
+	fd = open(archivo, O_RDONLY);
+	if (fd == -1)
+		return (0);
+	while ((read_data = read(fd, buf, 1024)) > 0)
+	{
+		write(STDOUT_FILENO, buf, read_data);
+	}
+	close(fd);
+	free(archivo);
+	return (1);
+}
+/**
+ * _env - function that show the command env in shell
+ * @source: doble pointer
+ * @environ: this is the
+ * @test:path
+ * @count_cmd:count of commands
+ * Return: 1 in case of successful
+ */
+int _env(char **source, char **environ, dir **test, long int *count_cmd)
+{
+	int i = 0, j = 0;
+	char *env = NULL;
+	(void)source;
+	(void)test;
+	(void)count_cmd;
+
+	if (environ == NULL || *environ == NULL)
+	{
+		write(1, "not found enviromental variable\n", 32);
+		return (1);
+	}
+	for (i = 0; environ[i] != NULL; i++)
+	{
+		env = environ[i];
+		for (j = 0; env[j]; j++)
+		{}
+		write(STDOUT_FILENO, env, j);
+		write(STDOUT_FILENO, "\n", 2);
+	}
+	return (1);
+}
+/**
+ * _union - function that show the command union in shell
+ * @sizenum: sizeof
+ * @count_cmd:count of commands
+ * Return: total
+ */
+char *_union(long int *count_cmd, int *sizenum)
+{
+	int i = 0;
+	char *total = NULL;
+	char *num = NULL;
+	char inicio[5] = "sh: ";
+	char inter[5] = ": cd";
+
+	num = print_integers(count_cmd, sizenum);
+	total = malloc(sizeof(char) * (9 + *sizenum));
+	if (total == '\0')
+		return ('\0');
+	for (i = 0; inicio[i]; i++)
+		total[i] = inicio[i];
+	for (i = 0; i < *sizenum; i++)
+		total[4 + i] = num[i];
+	for (i = 0; inter[i]; i++)
+		total[4 + *sizenum + i] = inter[i];
+	total[4 + *sizenum + i] = '\0';
+	free(num);
+	return (total);
 }
