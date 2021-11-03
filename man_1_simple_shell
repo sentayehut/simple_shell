@@ -1,0 +1,74 @@
+.\" Manpage for Simple Shell.
+.TH "sentayehut Simple Shell" 1 "22 October 2021" "1.0" "sentayehut Simple Shell man page"
+
+.SH NAME
+hsh - sentayeht Simple Shell
+
+.SH SYNOPSIS
+hsh (does not support arguments)
+
+.SH DESCRIPTION
+Welcome to the Minilik Simple Shell project! This program is a simple shell that can be compiled and launched from the command line within any number of Linux versions.
+
+.SH OVERVIEW
+The sentayehut Simple Shell project is a major team project conducted by sentayehu and antenne, students at Alx software engineering program.
+
+.SH RETURN VALUE
+The shell returns the error code given by the last completed command followed by either ctrl-d or exit with no status code.
+
+.SH SYNTAX
+sentayehut$ <command> <flags or options> <argument 1> <argument 2> ...
+
+$ <command> | ./hsh
+.SS
+
+.SS
+EXAMPLE 1:
+sentayehut$ /bin/ls
+.SS
+EXAMPLE 2:
+sentayehut$ ls -l
+.SS
+EXAMPLE 3:
+sentayehut$ cat textfile
+.SS
+
+
+.SS
+EXAMPLE 4:
+$ echo "ls -l" | ./hsh
+
+.SH BUILTIN COMMANDS
+.SS alias
+- create or list an alias
+
+.SS cd
+- change directory
+
+.SS env
+- list the current environment variable
+
+.SS exit
+- exit from shell
+
+.SS help
+- display help for a builtin command
+
+.SS history
+- display the command history for the current shell session
+
+.SS setenv
+- set and environment variable
+
+.SS unsetenv
+- unset an environment variable
+
+.SH SEE ALSO
+DASH(1), access(2), chdir(2), execve(2), _exit(2), exit(3), fflush(3), fork(2), free(3), isatty(3), getcwd(3), malloc(3), open(2), read(2), sh(1), signal(2), stat(2), wait(2), write(2)
+
+.SH BUGS
+No known bugs
+
+.SH AUTHORS
+Sentayehu Tilahun Adamu
+ANTENEH Bizuneh
