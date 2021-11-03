@@ -85,6 +85,7 @@ int display_help(char **cmd, int er);
 int echo_bul(char **cmd, int er);
 void  exit_bul(char **cmd, char *input, char **argv, int c);
 int print_echo(char **cmd);
+int dis_env(__attribute__((unused)) char **cmd, __attribute__((unused)) int er);
 
 /** ####error handle and Printer ####*/
 void print_number(unsigned int n);
