@@ -1,36 +1,35 @@
 .\" Manpage for Simple Shell.
-.TH "sentayehut Simple Shell" 1 "22 October 2021" "1.0" "sentayehut Simple Shell man page"
+.TH "cisfun Simple Shell" 1 "22 October 2021" "1.0" "cisfun Simple Shell man page"
 
 .SH NAME
-hsh - sentayeht Simple Shell
+hsh - cisfun Simple Shell
 
 .SH SYNOPSIS
 hsh (does not support arguments)
 
 .SH DESCRIPTION
-Welcome to the Minilik Simple Shell project! This program is a simple shell that can be compiled and launched from the command line within any number of Linux versions.
+Welcome to the cisfun Simple Shell project! This program is a simple shell that can be compiled and launched from the command line within any number of Linux versions.
 
 .SH OVERVIEW
-The sentayehut Simple Shell project is a major team project conducted by sentayehu and antenne, students at Alx software engineering program.
+The cisfun Simple Shell project is a major team project conducted by sentayehu and antenne, students at Alx software engineering program.
 
 .SH RETURN VALUE
 The shell returns the error code given by the last completed command followed by either ctrl-d or exit with no status code.
 
 .SH SYNTAX
-sentayehut$ <command> <flags or options> <argument 1> <argument 2> ...
-
+cisfun$ <command> <flags or options> <argument 1> <argument 2> ...
 $ <command> | ./hsh
 .SS
 
 .SS
-EXAMPLE 1:
-sentayehut$ /bin/ls
+EXAMPLe
+cisfun$ /bin/ls
 .SS
 EXAMPLE 2:
-sentayehut$ ls -l
+cisfun$ ls -l
 .SS
 EXAMPLE 3:
-sentayehut$ cat textfile
+cisfun$ cat textfile
 .SS
 
 
