@@ -1,91 +1,181 @@
 #include "shell.h"
 
 /**
- * main - Simple Shell (Hsh)
- * @argc: Argument Count
- * @argv:Argument Value
- * Return: Exit Value By Status
- */
-
-int main(__attribute__((unused)) int argc, char **argv)
-{
-char *input, **cmd;
-int counter = 0, statue = 1, st = 0;
-
-if (argv[1] != NULL)
-read_file(argv[1], argv);
-signal(SIGINT, signal_to_handel);
-while (statue)
-{
-counter++;
-if (isatty(STDIN_FILENO))
-prompt();
-input = _getline();
-if (input[0] == '\0')
-{
-continue;
-}
-history(input);
-cmd = parse_cmd(input);
-if (_strcmp(cmd[0], "exit") == 0)
-{
-exit_bul(cmd, input, argv, counter);
-}
-else if (check_builtin(cmd) == 0)
-{
-st = handle_builtin(cmd, st);
-free_all(cmd, input);
-continue;
-}
-else
-{
-st = check_cmd(cmd, input, counter, argv);
-
-}
-free_all(cmd, input);
-}
-return (statue);
-}
-/**
- * check_builtin - check builtin
+ * main - the main function
  *
- * @cmd:command to check
- * Return: 0 Succes -1 Fail
+ * Return: (Success) 0 always
+ * ------- (Fail) we drop out the looser :)
  */
-int check_builtin(char **cmd)
+int main(void)
 {
-bul_t fun[] = {
-{"cd", NULL},
-{"help", NULL},
-{"echo", NULL},
-{"history", NULL},
-{NULL, NULL}
-}
-;
-int i = 0;
-if (*cmd == NULL)
-{
-return (-1);
+	sh_t data;
+	int pl;
+
+	_memset((void *)&data, 0, sizeof(data));
+	signal(SIGINT, signal_handler);
+	while (1)
+	{
+		index_cmd(&data);
+		if (read_line(&data) < 0)
+		{
+			if (isatty(STDIN_FILENO))
+				PRINT("\n");
+			break;
+		}
+		if (split_line(&data) < 0)
+		{
+			free_data(&data);
+			continue;
+		}
+		pl = parse_line(&data);
+		if (pl == 0)
+		{
+			free_data(&data);
+			continue;
+		}
+		if (pl < 0)
+		{
+			print_error(&data);
+			continue;
+		}
+		if (process_cmd(&data) < 0)
+		{
+			print_error(&data);
+			break;
+		}
+		free_data(&data);
+	}
+	free_data(&data);
+	exit(EXIT_SUCCESS);
 }
 
-while ((fun + i)->command)
-{
-if (_strcmp(cmd[0], (fun + i)->command) == 0)
-return (0);
-i++;
-}
-return (-1);
-}
 /**
- * creat_envi - Creat Array of Enviroment Variable
- * @envi: Array of Enviroment Variable
- * Return: Void
+ * read_line - read a line from the standard input
+ * @data: a pointer to the struct of data
+ *
+ * Return: (Success) a positive number
+ * ------- (Fail) a negative number
  */
-void creat_envi(char **envi)
+int read_line(sh_t *data)
 {
-int i;
+	char *csr_ptr, *end_ptr, c;
+	size_t size = BUFSIZE, read_st, length, new_size;
 
-for (i = 0; environ[i]; i++)
-envi[i] = _strdup(environ[i]);
-envi[i] = NULL;
+	data->line = malloc(size * sizeof(char));
+	if (data->line == NULL)
+		return (FAIL);
+	if (isatty(STDIN_FILENO))
+		PRINT(PROMPT);
+	for (csr_ptr = data->line, end_ptr = data->line + size;;)
+	{
+		read_st = read(STDIN_FILENO, &c, 1);
+		if (read_st == 0)
+			return (FAIL);
+		*csr_ptr++ = c;
+		if (c == '\n')
+		{
+			*csr_ptr = '\0';
+			return (SUCCESS);
+		}
+		if (csr_ptr + 2 >= end_ptr)
+		{
+			new_size = size * 2;
+			length = csr_ptr - data->line;
+			data->line = _realloc(data->line, size * sizeof(char),
+						new_size * sizeof(char));
+			if (data->line == NULL)
+				return (FAIL);
+			size = new_size;
+			end_ptr = data->line + size;
+			csr_ptr = data->line + length;
+		}
+	}
 }
+#define DELIMITER " \n\t\r\a\v"
+/**
+ * split_line - splits line to tokens
+ * @data: a pointer to the struct of data
+ *
+ * Return: (Success) a positive number
+ * ------- (Fail) a negative number
+ */
+int split_line(sh_t *data)
+{
+	char *token;
+	size_t size = TOKENSIZE, new_size, i = 0;
+
+	if (_strcmp(data->line, "\n") == 0)
+		return (FAIL);
+	data->args = malloc(size * sizeof(char *));
+	if (data->args == NULL)
+		return (FAIL);
+	token = strtok(data->line, DELIMITER);
+	if (token == NULL)
+		return (FAIL);
+	while (token)
+	{
+		data->args[i++] =  token;
+		if (i + 2 >= size)
+		{
+			new_size = size * 2;
+			data->args = _realloc(data->args, size * sizeof(char *),
+					new_size * sizeof(char *));
+			if (data->args == NULL)
+				return (FAIL);
+			size = new_size;
+		}
+		token = strtok(NULL, DELIMITER);
+	}
+	data->args[i] = NULL;
+	return (0);
+}
+#undef DELIMITER
+#define DELIMITER ":"
+/**
+ * parse_line - parses arguments to valid command
+ * @data: a pointer to the struct of data
+ *
+ * Return: (Success) a positive number
+ * ------- (Fail) a negative number
+ */
+int parse_line(sh_t *data)
+{
+	if (is_path_form(data) > 0)
+		return (SUCCESS);
+	if (is_builtin(data) > 0)
+	{
+		if (handle_builtin(data) < 0)
+			return (FAIL);
+		return (NEUTRAL);
+	}
+	is_short_form(data);
+	return (SUCCESS);
+}
+#undef DELIMITER
+/**
+ * process_cmd - process command and execute process
+ * @data: a pointer to the struct of data
+ *
+ * Return: (Success) a positive number
+ * ------- (Fail) a negative number
+ */
+int process_cmd(sh_t *data)
+{
+	pid_t pid;
+	int status;
+
+	pid = fork();
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		if (execve(data->cmd, data->args, environ) < 0)
+		data->error_msg = _strdup("not found\n");
+			return (FAIL);
+	}
+	else
+	{
+		waitpid(pid, &status, WUNTRACED);
+	}
+	return (0);
+}
+
