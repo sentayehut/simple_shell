@@ -34,7 +34,6 @@ exit(statue);
 }
 }
 
-
 /**
  * change_dir - Change Dirctorie
  * @cmd: Parsed Command
