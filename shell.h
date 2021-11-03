@@ -25,10 +25,6 @@ extern char **environ;
 #include <errno.h>
 #include <linux/limits.h>
 
-
-
-
-
 /**###### STRING FUNCTION ######*/
 
 char *_strtok(char *str, const char *tok);
@@ -95,7 +91,6 @@ void print_number(unsigned int n);
 void print_number_in(int n);
 void print_error(char *line, int c, char **argv);
 void _prerror(char **argv, int c, char **cmd);
-
 
 /**
  * struct bulltin - contain bultin to handle and function to excute
