@@ -1,130 +1,152 @@
 #include "shell.h"
-
-#define SETOWD(V) (V = _strdup(_getenv("OLDPWD")))
 /**
- * change_dir - changes directory
- * @data: a pointer to the data structure
- *
- * Return: (Success) 0 is returned
- * ------- (Fail) negative number will returned
+ * exit_bul - Exit Statue Shell
+ * @cmd: Parsed Command
+ * @input: User Input
+ * @argv:Program Name
+ * @c:Excute Count
+ * Return: Void (Exit Statue)
  */
-int change_dir(sh_t *data)
+void  exit_bul(char **cmd, char *input, char **argv, int c)
 {
-	char *home;
+int statue, i = 0;
 
-	home = _getenv("HOME");
-	if (data->args[1] == NULL)
-	{
-		SETOWD(data->oldpwd);
-		if (chdir(home) < 0)
-			return (FAIL);
-		return (SUCCESS);
-	}
-	if (_strcmp(data->args[1], "-") == 0)
-	{
-		if (data->oldpwd == 0)
-		{
-			SETOWD(data->oldpwd);
-			if (chdir(home) < 0)
-				return (FAIL);
-		}
-		else
-		{
-			SETOWD(data->oldpwd);
-			if (chdir(data->oldpwd) < 0)
-				return (FAIL);
-		}
-	}
-	else
-	{
-		SETOWD(data->oldpwd);
-		if (chdir(data->args[1]) < 0)
-			return (FAIL);
-	}
-	return (SUCCESS);
+if (cmd[1] == NULL)
+{
+free(input);
+free(cmd);
+exit(EXIT_SUCCESS);
 }
-#undef GETCWD
-/**
- * abort_prg - exit the program
- * @data: a pointer to the data structure
- *
- * Return: (Success) 0 is returned
- * ------- (Fail) negative number will returned
- */
-int abort_prg(sh_t *data __attribute__((unused)))
+while (cmd[1][i])
 {
-	int code, i = 0;
+if (_isalpha(cmd[1][i++]) != 0)
+{
+_prerror(argv, c, cmd);
+break;
+}
+else
+{
+statue = _atoi(cmd[1]);
+free(input);
+free(cmd);
+exit(statue);
+}
+}
+}
 
-	if (data->args[1] == NULL)
-	{
-		free_data(data);
-		exit(errno);
-	}
-	while (data->args[1][i])
-	{
-		if (_isalpha(data->args[1][i++]) < 0)
-		{
-			data->error_msg = _strdup("Illegal number\n");
-			return (FAIL);
-		}
-	}
-	code = _atoi(data->args[1]);
-	free_data(data);
-	exit(code);
+
+/**
+ * change_dir - Change Dirctorie
+ * @cmd: Parsed Command
+ * @er: Statue Last Command Excuted
+ * Return: 0 Succes 1 Failed (For Old Pwd Always 0 Case No Old PWD)
+ */
+int change_dir(char **cmd, __attribute__((unused))int er)
+{
+int value = -1;
+char cwd[PATH_MAX];
+
+if (cmd[1] == NULL)
+value = chdir(getenv("HOME"));
+else if (_strcmp(cmd[1], "-") == 0)
+{
+value = chdir(getenv("OLDPWD"));
+}
+else
+value = chdir(cmd[1]);
+
+if (value == -1)
+{
+perror("hsh");
+return (-1);
+}
+else if (value != -1)
+{
+getcwd(cwd, sizeof(cwd));
+setenv("OLDPWD", getenv("PWD"), 1);
+setenv("PWD", cwd, 1);
+}
+return (0);
 }
 /**
- * display_help - display the help menu
- * @data: a pointer to the data structure
- *
- * Return: (Success) 0 is returned
- * ------- (Fail) negative number will returned
+ * dis_env - Display Enviroment Variable
+ * @cmd:Parsed Command
+ * @er:Statue of Last command Excuted
+ * Return:Always 0
  */
-int display_help(sh_t *data)
+int dis_env(__attribute__((unused)) char **cmd, __attribute__((unused)) int er)
 {
-	int fd, fw, rd = 1;
-	char c;
+size_t i;
+int len;
 
-	fd = open(data->args[1], O_RDONLY);
-	if (fd < 0)
-	{
-		data->error_msg = _strdup("no help topics match\n");
-		return (FAIL);
-	}
-	while (rd > 0)
-	{
-		rd = read(fd, &c, 1);
-		fw = write(STDOUT_FILENO, &c, rd);
-		if (fw < 0)
-		{
-			data->error_msg = _strdup("cannot write: permission denied\n");
-			return (FAIL);
-		}
-	}
-	PRINT("\n");
-	return (SUCCESS);
+for (i = 0; environ[i] != NULL; i++)
+{
+len = _strlen(environ[i]);
+write(1, environ[i], len);
+write(STDOUT_FILENO, "\n", 1);
+}
+return (0);
 }
 /**
- * handle_builtin - handle and manage the builtins cmd
- * @data: a pointer to the data structure
- *
- * Return: (Success) 0 is returned
- * ------- (Fail) negative number will returned
+ * display_help - Displaying Help For Builtin
+ * @cmd:Parsed Command
+ * @er: Statue Of Last Command Excuted
+ * Return: 0 Succes -1 Fail
  */
-int handle_builtin(sh_t *data)
+int display_help(char **cmd, __attribute__((unused))int er)
 {
-	blt_t blt[] = {
-		{"exit", abort_prg},
-		{"cd", change_dir},
-		{"help", display_help},
-		{NULL, NULL}
-	};
-	int i = 0;
+int fd, fw, rd = 1;
+char c;
 
-	while ((blt + i)->cmd)
-	{
-		if (_strcmp(data->args[0], (blt + i)->cmd) == 0)
-			return ((blt + i)->f(data));
-		i++;
-	}
-	return (FAIL);
+fd = open(cmd[1], O_RDONLY);
+if (fd < 0)
+{
+perror("Error");
+return (0);
+}
+while (rd > 0)
+{
+rd = read(fd, &c, 1);
+fw = write(STDOUT_FILENO, &c, rd);
+if (fw < 0)
+{
+return (-1);
+}
+}
+_putchar('\n');
+return (0);
+}
+/**
+ * echo_bul - Excute Echo Cases
+ * @st:Statue Of Last Command Excuted
+ * @cmd: Parsed Command
+ * Return: Always 0 Or Excute Normal Echo
+ */
+int echo_bul(char **cmd, int st)
+{
+char *path;
+unsigned int  pid = getppid();
+
+if (_strncmp(cmd[1], "$?", 2) == 0)
+{
+print_number_in(st);
+PRINTER("\n");
+}
+else if (_strncmp(cmd[1], "$$", 2) == 0)
+{
+print_number(pid);
+PRINTER("\n");
+
+}
+else if (_strncmp(cmd[1], "$PATH", 5) == 0)
+{
+path = _getenv("PATH");
+PRINTER(path);
+PRINTER("\n");
+free(path);
+}
+else
+return (print_echo(cmd));
+
+return (1);
 }
