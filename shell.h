@@ -44,11 +44,6 @@ char *_strcpy(char *dest, char *src);
 char *_strchr(char *s, char c);
 int _strncmp(const char *s1, const char *s2, size_t n);
 char *_strdup(char *str);
-int _which(char **source, char **environ, dir **test, long int *count_cmd);
-int _cd(char **source, char **environ, dir **test, long int *count_cmd);
-int _help(char **source, char **environ, dir **test, long int *count_cmd);
-int _env(char **source, char **environ, dir **test, long int *count_cmd);
-char *_union(long int *count_cmd, int *sizenum);
 
 /**###### MEMORIE  MANGMENT ####*/
 
