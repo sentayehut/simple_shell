@@ -22,6 +22,7 @@ int hist;
  * struct list_s - A new struct type defining a linked list.
  * @dir: A directory path.
  * @next: A pointer to another struct list_s.
+ * author: Anteneh kassaw & Sentayehu Tilahun
  */
 typedef struct list_s
 {
