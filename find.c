@@ -7,6 +7,7 @@ list_t *get_path_dir(char *path);
  *
  * Return: If an error occurs or the command cannot be located - NULL.
  *         Otherwise - the full pathname of the command.
+ *author : Anteneh Kassaw & Sentayehu Tilahun
  */
 char *get_location(char *command)
 {
