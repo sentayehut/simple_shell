@@ -10,6 +10,7 @@ char **_strtok(char *line, char *delim);
  *
  * Return: The delimiter index marking the end of
  *         the intitial token pointed to be str.
+ * author :Anteneh Bizuneh & Sentayehu Tilahun
  */
 int token_len(char *str, char *delim)
 {
