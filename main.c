@@ -21,6 +21,7 @@ write(STDIN_FILENO, new_prompt, 3); }
  *
  * Return: If an error occurs - a corresponding error code.
  *         O/w - The exit value of the last executed command.
+ * author :Anteneh Kassaw & Sentayehu Tilahun
  */
 int execute(char **args, char **front)
 {
