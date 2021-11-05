@@ -11,6 +11,7 @@ int check_args(char **args);
  *
  * Return: If an error occurs - NULL.
  *         Otherwise - a pointer to the stored command.
+ * author: Anteneh Kassaw & Sentayehu Tilahun
  */
 char *get_args(char *line, int *exe_ret)
 {
