@@ -1,6 +1,6 @@
 # Simple Shell Group Project
 
-            * Resources
+            
 
             * Read or watch:
             * Unix shell

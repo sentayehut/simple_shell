@@ -1,4 +1,4 @@
-.TH SHELL 1 "october 3 2018" "Alx Holberton School" "0x15. C - Simple Shell"
+.TH SHELL 1 "2-November-2021" "Alx Holberton School" "0x16. C - Simple Shell"
 .SH NAME
 .B shell\fR \- simple UNIX command interpreter
 .SH SYNOPSIS
