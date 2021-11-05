@@ -9,6 +9,7 @@ void logical_ops(char *line, ssize_t *new_len);
  *
  * Description: Spaces are inserted to separate ";", "||", and "&&".
  *              Replaces "#" with '\0'.
+ * author :Anteneh Bizuneh & Sentayehu Tilahun
  */
 void handle_line(char **line, ssize_t read)
 {
