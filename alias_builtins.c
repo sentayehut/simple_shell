@@ -37,10 +37,11 @@ print_alias(temp);
 break; }
 temp = temp->next;
 if (!temp)
-  ret = create_error(args + i, 1); }}
+ret = create_error(args + i, 1); }}
 else
 set_alias(args[i], value); }
-return (ret); }
+return (ret);
+}
 /**
  * set_alias - Will either set an existing alias 'name' with a new value,
  * 'value' or creates a new alias with 'name' and 'value'.
