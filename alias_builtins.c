@@ -10,6 +10,7 @@ void print_alias(alias_t *alias);
  *
  * Return: If an error occurs - -1.
  *         Otherwise - 0.
+ *authors:Senayehu Telahun & Anteneh Kassaw
  */
 int shellby_alias(char **args, char __attribute__((__unused__)) **front)
 {
