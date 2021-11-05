@@ -1,6 +1,8 @@
 # Simple Shell Group Project
 
             
+ Description:
+            A simple UNIX command interpreter is a program that reads commands from the standard input or files and executes them in order to display a result.
 
             * Read or watch:
             * Unix shell
