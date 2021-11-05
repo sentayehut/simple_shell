@@ -9,6 +9,7 @@ char *error_2_syntax(char **args);
  * @args: An array of arguments passed to the command.
  *
  * Return: The error string.
+ * author : Anteneh Kassaw & Sentayehu Tilahun
  */
 char *error_env(char **args)
 {
