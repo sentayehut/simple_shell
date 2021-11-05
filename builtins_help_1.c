@@ -6,6 +6,7 @@ void help_exit(void);
 void help_help(void);
 /**
  * help_all - Displays all possible builtin shellby commands.
+ * author Anteneh Bizuneh & Sentayehu Tilahun
  */
 void help_all(void)
 {
