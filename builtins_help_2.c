@@ -5,6 +5,7 @@ void help_unsetenv(void);
 void help_history(void);
 /**
  * help_env - Displays information on the shellby builtin command 'env'.
+ *authors: Sentayehu Tilahun & Anteneh Bizuneh
  */
 void help_env(void)
 {
