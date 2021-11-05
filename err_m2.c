@@ -6,6 +6,7 @@ char *error_127(char **args);
  * @args: An array of arguments passed to the command.
  *
  * Return: The error string.
+ * author : Anteneh kassaw & Sentayehu Tilahun
  */
 char *error_126(char **args)
 {
