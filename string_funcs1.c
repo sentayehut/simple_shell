@@ -8,6 +8,7 @@ char *_strncat(char *dest, const char *src, size_t n);
  * @s: A pointer to the characters string.
  *
  * Return: The length of the character string.
+ * author :Sentayehu Tilahun & Antenh Bizuneh
  */
 int _strlen(const char *s)
 {
