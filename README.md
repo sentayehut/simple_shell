@@ -1,4 +1,4 @@
-# Simple Shell Group Project
+# Simple Shell Group Project for Alx school
 
             
  Description:
