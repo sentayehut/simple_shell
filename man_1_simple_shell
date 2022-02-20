@@ -1,15 +1,15 @@
 .TH SHELL 1 "2-November-2021" "Alx Holberton School" "0x16. C - Simple Shell"
 .SH NAME
-.B shell\fR \- simple UNIX command interpreter
+.B shellby\fR \- simple UNIX command interpreter
 .SH SYNOPSIS
 .B shellby\fR [\fIfilename\fR]
 .SH DESCRIPTION
-.B Shell\fR is a simple UNIX command language interpreter that reads commands from either a file or standard input and executes them.
+.B Shellby\fR is a simple UNIX command language interpreter that reads commands from either a file or standard input and executes them.
 
 .B Invocation
 .in +2n
 \fBShellby\fR can be invoked both interactively and non-interactively.
-If \fBshell\fR is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
+If \fBshellby\fR is invoked with standard input not connected to a terminal, it reads and executes received commands in order.
 
 If \fBshellby\fR is invoked with standard input connected to a terminal (determined by \fIisatty(3)\fR), an \fIinteractive\fR shell is opened.
 When executing interactively, \fBshellby\fR displays the prompt \fI$ \fR when it is ready to read a command.
