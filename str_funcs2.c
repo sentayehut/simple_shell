@@ -12,7 +12,6 @@ int _strncmp(const char *s1, const char *s2, size_t n);
  *
  * Return: If c is found - a pointer to the first occurence.
  *         If c is not found - NULL.
- * author : Sentayehu Tilahun & Anteneh Bizuneh
  */
 char *_strchr(char *s, char c)
 {
