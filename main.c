@@ -1,134 +1,105 @@
 #include "shell.h"
 
-void sig_handler(int sig);
-int execute(char **args, char **front);
+static char *FIRST_ARG;
+
+int handle_arguments(int ac, char **av, int *exec_file);
+void sigintHandler(int sig_num);
+char *get_first_av();
 
 /**
- * sig_handler - Prints a new prompt upon a signal.
- * @sig: The signal.
- */
-void sig_handler(int sig)
-{
-	char *new_prompt = "\n$ ";
-
-	(void)sig;
-	signal(SIGINT, sig_handler);
-	write(STDIN_FILENO, new_prompt, 3);
-}
-
-/**
- * execute - Executes a command in a child process.
- * @args: An array of arguments.
- * @front: A double pointer to the beginning of args.
+ * main - Entry point
+ * @ac: number of arguments
+ * @av: Array of arguments
  *
- * Return: If an error occurs - a corresponding error code.
- *         O/w - The exit value of the last executed command.
- */
-int execute(char **args, char **front)
+ * Return: 0 on success
+*/
+int main(int ac, char **av)
 {
-	pid_t child_pid;
-	int status, flag = 0, ret = 0;
-	char *command = args[0];
+	int read, exec_file = 0;
+	char *buff = NULL;
+	size_t buff_len = 0;
+	int fd;
 
-	if (command[0] != '/' && command[0] != '.')
-	{
-		flag = 1;
-		command = get_location(command);
-	}
+	FIRST_ARG = av[0];
 
-	if (!command || (access(command, F_OK) == -1))
-	{
-		if (errno == EACCES)
-			ret = (create_error(args, 126));
-		else
-			ret = (create_error(args, 127));
-	}
-	else
-	{
-		child_pid = fork();
-		if (child_pid == -1)
-		{
-			if (flag)
-				free(command);
-			perror("Error child:");
-			return (1);
-		}
-		if (child_pid == 0)
-		{
-			execve(command, args, environ);
-			if (errno == EACCES)
-				ret = (create_error(args, 126));
-			free_env();
-			free_args(args, front);
-			free_alias_list(aliases);
-			_exit(ret);
-		}
-		else
-		{
-			wait(&status);
-			ret = WEXITSTATUS(status);
-		}
-	}
-	if (flag)
-		free(command);
-	return (ret);
-}
-
-/**
- * main - Runs a simple UNIX command interpreter.
- * @argc: The number of arguments supplied to the program.
- * @argv: An array of pointers to the arguments.
- *
- * Return: The return value of the last executed command.
- */
-int main(int argc, char *argv[])
-{
-	int ret = 0, retn;
-	int *exe_ret = &retn;
-	char *prompt = "$ ", *new_line = "\n";
-
-	name = argv[0];
-	hist = 1;
-	aliases = NULL;
-	signal(SIGINT, sig_handler);
-
-	*exe_ret = 0;
-	environ = _copyenv();
-	if (!environ)
-		exit(-100);
-
-	if (argc != 1)
-	{
-		ret = proc_file_commands(argv[1], exe_ret);
-		free_env();
-		free_alias_list(aliases);
-		return (*exe_ret);
-	}
-
-	if (!isatty(STDIN_FILENO))
-	{
-		while (ret != END_OF_FILE && ret != EXIT)
-			ret = handle_args(exe_ret);
-		free_env();
-		free_alias_list(aliases);
-		return (*exe_ret);
-	}
+	signal(SIGINT, sigintHandler);
+	fd = handle_arguments(ac, av, &exec_file);
+	/*update_count_lines();*/
 
 	while (1)
 	{
-		write(STDOUT_FILENO, prompt, 2);
-		ret = handle_args(exe_ret);
-		if (ret == END_OF_FILE || ret == EXIT)
+		/* Print console symbol only if it is interactive*/
+		if (isatty(STDIN_FILENO) == 1 && exec_file == 0)
+			write(STDOUT_FILENO, "$ ", 2);
+		/* Read commands from console */
+		/*read = read_line(fd, &buff);*/
+		read = getline(&buff, &buff_len, stdin);
+		if (read == EOF)
 		{
-			if (ret == END_OF_FILE)
-				write(STDOUT_FILENO, new_line, 1);
-			free_env();
-			free_alias_list(aliases);
-			exit(*exe_ret);
+			free(buff);
+			exit(*process_exit_code());
 		}
+		/*handle_history(buff);*/
+		/* Remove comments & '\n' char from buffer */
+		buff = handle_comment(buff);
+		_strtok(buff, "\n");
+		/* Handling_semicolon, ||, && and executes inside of the function */
+		handling_semicolon_and_operators(buff, read, av[0]);
+	}
+	/* Free buffer memory */
+	free(buff);
+	if (exec_file)
+		close(fd);
+	return (*process_exit_code());
+}
+
+/**
+ * handle_arguments - Check the number of arguments passed to main
+ * @ac: Number of arguments
+ * @av: Array of arguments as strings
+ * @exec_file: Integer used to check if user wants to exec commands from file
+ *
+ * Return: File descriptor to file
+*/
+int handle_arguments(int ac, char **av, int *exec_file)
+{
+	int fd = STDIN_FILENO;
+	char *err_msg = "Error: more than one argument\n";
+
+	if (ac > 2)
+	{
+		write(STDERR_FILENO, err_msg, _strlen(err_msg));
+		exit(1);
+	}
+	if (ac == 2)
+	{
+		fd = open(av[1], O_RDONLY);
+		*exec_file = 1;
+	}
+	if (fd == -1)
+	{
+		perror(av[0]);
+		exit(1);
 	}
 
-	free_env();
-	free_alias_list(aliases);
-	return (*exe_ret);
+	return (fd);
+}
+
+/**
+ * sigintHandler - Avoids current process to finish
+ * @sig_num: Signal number
+*/
+void sigintHandler(int __attribute__((unused))sig_num)
+{
+	write(STDIN_FILENO, "\n$ ", 3);
+}
+
+/**
+ * get_first_av - Returns the first argument passed to main
+ *
+ * Return: Pointer to first arg passed to main
+*/
+char *get_first_av(void)
+{
+	return (FIRST_ARG);
 }
